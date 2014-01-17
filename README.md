@@ -1,6 +1,6 @@
 <h1>make_galaxy</h1>
 
-<h2>Currently rewriting!</h2>
+<h3>Currently rewriting!</h3>
 
 Simulates galaxy formation / generation via gas / star behavior in a region of space, via equations for gravitational and diffusive force (or simplified versions thereof). The simlation is a representation of two or more galaxies feeding gas / stars into a region of space. The data is representated in an array such that [x,y] = [mass, x velocity, y velocity]. Those qualities are then iterated upon to create the model. The goal of this project is to computationally produce an approximation of a spiral galaxy.
 
