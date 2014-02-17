@@ -3,12 +3,25 @@
 import math
 import numpy
 
+class createProgressBar ():
+    def __init__ (self,maxval):
+    	from progressbar import *
+    	widgets = ['Test: ', Percentage(), ' ', Bar(marker='0',left='[',right=']'),
+    		   ' ', ETA(), ' ', FileTransferSpeed()] 
+    	PROGRESSBAR = ProgressBar(widgets=widgets, maxval=maxval)
+    	self.start = PROGRESSBAR.start()
+    	self.finish = PROGRESSBAR.finish()
+    def update (self,value):
+        PROGRESSBAR.update(value)
+
 def rotate (point_x, point_y, rads, center=(0,0)):
     newX = center[0] + (point_x-center[0])*math.cos(rads) - (point_y-center[1])*math.sin(rads)
     newY = center[1] + (point_x-center[0])*math.sin(rads) + (point_y-center[1])*math.cos(rads)
     return newX,newY
 
 def build_distance_matrix (size):
+    dmBar = createProgressBar(size)
+    dmBar.start
     distance_matrix = dict()
     known_distances = dict()
     for x1 in range(size):
@@ -24,6 +37,8 @@ def build_distance_matrix (size):
                     known_distances[dy,dx] = dist
                     distance_matrix[x1, y1][x2, y2] = dist
                 distance_matrix[x1, y1][x2, y2] = math.hypot(dx, dy)
+    
+    dmBar.finish
     return distance_matrix
 
 def sortkeys (data):
