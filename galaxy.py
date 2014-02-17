@@ -49,9 +49,12 @@ class galaxy (object):
         self.y_velocities, self._y_velocities = self._y_velocities, self.y_velocities
 
     def _add_to_location (self, mass, x, y, x_velocity, y_velocity):
-        x = int(round(x)); y = int(round(y))
-        #print("adding to point ",x,y)
-        if x>self.size or x<0 or y>self.size or y<0:
+        try:
+            x = int(round(x)); y = int(round(y))
+        except ValueError:
+            pass
+        print("adding to point ",x,y)
+        if x>=self.size or x<0 or y>=self.size or y<0 or math.isnan(x) or math.isnan(y):
             self.ejected_mass += mass
             print("offmap")
         elif self._masses[x, y] == 0:
@@ -107,13 +110,13 @@ class galaxy (object):
             self.x, self.y = rotate(self.x, self.y, math.pi/128, self.galaxy.center_point)
 
 if __name__ == "__main__":
-    size = 100
+    size = 25
     emitter1 = (10, round(size / 10), size / 2)
     emitter2 = (10, round(9 * size / 10), size / 2)
     galaxy = galaxy(size, 5, emitter1, emitter2)
     frames = list()
     frames.append(numpy.copy(galaxy.masses))
-    for i in range(50):
+    for i in range(20):
         galaxy.time_step()
         frames.append(numpy.copy(galaxy.masses))
         print("Frame ",i)
