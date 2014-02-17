@@ -1,5 +1,6 @@
 #animate.py
 
+from __future__ import division
 import time
 import numpy
 import matplotlib

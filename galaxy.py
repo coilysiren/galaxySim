@@ -1,5 +1,6 @@
 #galaxy.py
 
+from __future__ import division
 import numpy
 import math
 import matplotlib

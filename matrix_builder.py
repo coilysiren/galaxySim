@@ -1,5 +1,6 @@
 #matrix_builder.py
 
+from __future__ import division
 from custom import build_distance_matrix
 import numpy
 import pickle
