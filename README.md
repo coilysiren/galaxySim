@@ -7,3 +7,4 @@ Simulates galaxy formation / generation via gas / star behavior in a region of s
 <b>Modules: </b> <a href"www.numpy.org">numpy</a> (2d list), <a href"matplotlib.org">matplotlib</a> (plotting) (basically the scipy stack)
 
 <b>Info:</b> <a href="http://en.wikipedia.org/wiki/Star_formation">general star formation</a>, <a href="http://en.wikipedia.org/wiki/Galaxy_formation_and_evolution">general galaxy formation</a>
+<!-- -->
