@@ -7,23 +7,24 @@ import matplotlib
 import matplotlib.pyplot
 import time
 import pickle
+import sys
+from custom import loopProgress
 from custom import rotate
 from custom import build_distance_matrix
 
 class galaxy (object):
 
-    def __init__ (self, size, local_gravitation_threshold, emitter1, emitter2):
+    def __init__ (self, size, emitter1, emitter2):
         MASS = 0; X = 1; Y = 2
         #parameters
         self.ejected_mass = 0
         self.size = size
         self.center_point = (int(size / 2), int(size / 2))
-        self.local_gravitation_threshold = local_gravitation_threshold
         #emitters
         self.emitter1 = galaxy.emitter(self, emitter1[MASS], emitter1[X], emitter1[Y])
         self.emitter2 = galaxy.emitter(self, emitter2[MASS], emitter2[X], emitter2[Y])
         #data matrixes
-        self.distance_matrix = pickle.load(open("matrix.p", "rb"))
+        self.distance_matrix = pickle.load(open("data/matrix"+str(size)+".p", "rb")) #not tested yet!!!
         self.masses = numpy.zeros((size, size))
         self.x_velocities = numpy.zeros((size, size))
         self.y_velocities = numpy.zeros((size, size))
@@ -54,10 +55,10 @@ class galaxy (object):
             x = int(round(x)); y = int(round(y))
         except ValueError:
             pass
-        print("adding to point ",x,y)
+        #print("adding to point ",x,y)
         if x>=self.size or x<0 or y>=self.size or y<0 or math.isnan(x) or math.isnan(y):
             self.ejected_mass += mass
-            print("offmap")
+            #print("offmap")
         elif self._masses[x, y] == 0:
             self._masses[x, y] = mass
             self._x_velocities[x, y] = x_velocity
@@ -111,14 +112,26 @@ class galaxy (object):
             self.x, self.y = rotate(self.x, self.y, math.pi/128, self.galaxy.center_point)
 
 if __name__ == "__main__":
-    size = 25
+    try:
+        size = int(sys.argv[1])
+    except IndexError:
+        print("no size given, defaulting to 10")
+        size = 10
+    try:
+        maxFrames = int(sys.argv[2])
+    except IndexError:
+        print("no frames given, defaulting to 20")
+        maxFrames = 20
     emitter1 = (10, round(size / 10), size / 2)
     emitter2 = (10, round(9 * size / 10), size / 2)
-    galaxy = galaxy(size, 5, emitter1, emitter2)
+    galaxy = galaxy(size, emitter1, emitter2)
     frames = list()
     frames.append(numpy.copy(galaxy.masses))
-    for i in range(20):
+    pb = loopProgress(maxFrames)
+    for i in range(maxFrames):
         galaxy.time_step()
         frames.append(numpy.copy(galaxy.masses))
-        print("Frame ",i)
-    numpy.save("output", frames)
+        #print("Frame ",i)
+        pb.update(i)
+    print("\nCreating: data/output_s"+str(size)+"_f"+str(maxFrames))
+    numpy.save("data/output_s"+str(size)+"_f"+str(maxFrames), frames)

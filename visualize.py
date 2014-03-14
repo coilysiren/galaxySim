@@ -1,21 +1,3 @@
-'''
-visualize.py
-
-Used to visualize numpy data sets
-
-Use
-    python visualize.py gif
-    python visualize.py png
-    python visualize.py plot
-
-Dependencies
-    Python 2.7
-    PIL
-    matplotlib
-    numpy
-    images2gif.py
-'''
-
 import time
 import numpy
 import PIL
@@ -28,7 +10,23 @@ import glob
 import images2gif
 
 def visualize(display):
+    '''
+    visualize.py
 
+    Used to visualize numpy data sets
+
+    Use
+        python visualize.py gif
+        python visualize.py png
+        python visualize.py plot
+
+    Dependencies
+        Python 2.7
+        PIL
+        matplotlib
+        numpy
+        images2gif.py
+    '''
     #data selection
     npframes = "none"
     dataContent = glob.glob("data/*.npy")
@@ -81,4 +79,13 @@ def visualize(display):
     return "True"
 
 if __name__ == "__main__":
-    visualize(sys.argv[1]) 
+    #this breaks DRY
+    try:
+        command = sys.argv[1]
+        if command == "help":
+            print(visualize.__doc__)
+        else:
+            visualize(command) 
+    except IndexError:
+        print("\nNo input given, please view doc\n-------------------------------")
+        print(visualize.__doc__)

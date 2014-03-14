@@ -98,7 +98,7 @@ class loopProgress (object):
         pb.update(i) #update value
     '''
     def __init__ (self, maxVal=0):
-        self.maxVal = maxVal
+        self.maxVal = maxVal-1
         print("Loop progress")
     def update (self, counter):
         sys.stdout.flush()
