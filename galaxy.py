@@ -11,12 +11,14 @@ import sys
 from custom import loopProgress
 from custom import rotate
 from custom import build_distance_matrix
+from custom import partitionData
 
 class galaxy (object):
 
     def __init__ (self, size, emitterList):
         MASS = 0; X = 1; Y = 2
         #parameters
+        self.galaxyMass = 0
         self.ejected_mass = 0
         self.size = size
         self.center_point = (int(size / 2), int(size / 2))
@@ -25,13 +27,14 @@ class galaxy (object):
         for i, emitter in enumerate(self.emitterList):
             self.emitterList[i] = galaxy.emitter(self, emitter[MASS], emitter[X], emitter[Y])
         #data matrixes
-        self.distance_matrix = pickle.load(open("data/matrix"+str(size)+".p", "rb")) #not tested yet!!!
+        #self.distance_matrix = pickle.load(open("data/matrix"+str(size)+".p", "rb")) #not tested yet!!!
         self.masses = numpy.zeros((size, size))
         self.x_velocities = numpy.zeros((size, size))
         self.y_velocities = numpy.zeros((size, size))
         self._masses = numpy.empty((size, size))
         self._x_velocities = numpy.empty((size, size))
         self._y_velocities = numpy.empty((size, size))
+        self.partitionInstance = partitionData(self.masses)
 
     def time_step (self):
         self._masses.fill(0)
@@ -54,6 +57,7 @@ class galaxy (object):
         #print("adding to point ",x,y)
         if x>=self.size or x<0 or y>=self.size or y<0 or math.isnan(x) or math.isnan(y):
             self.ejected_mass += mass
+            self.galaxyMass -= mass
             #print("offmap")
         elif self._masses[x, y] == 0:
             self._masses[x, y] = mass
@@ -74,6 +78,20 @@ class galaxy (object):
             self._add_to_location(mass_here, location[X]+x_velocity, location[Y]+y_velocity, x_velocity, y_velocity)
 
     def _gravitate (self):
+        #gravitate only to points in your partition
+        self.partitionInstance.data = self.masses
+        self.partitionInstance.calculateCenterOfMass()
+        PCOM = self.partitionInstance.partitionCenterOfMass
+        PMASS = self.partitionInstance.partitionMass
+        #get the galaxy weighted position
+        wieghtedPositionGalaxy = [0,0]
+        for partition, COM in numpy.ndenumerate(PCOM):
+            COMX = COM[0]; COMY = COM[1]
+        
+        for partitionHere, points in self.partitionInstance.partitionToPoints.items():
+
+        #gravitate every point to every other point
+        '''
         for location_here, mass_here in numpy.ndenumerate(self.masses):
             X = 0; Y = 1; G = .1
             if not mass_here: continue
@@ -91,6 +109,7 @@ class galaxy (object):
                 y_velocity_change += relative_y*acceleration/distance_to
             self.x_velocities[location_here] += x_velocity_change
             self.y_velocities[location_here] += y_velocity_change
+        '''
     #very experimental diffusion code
     '''
     def _diffuse (self):
@@ -135,6 +154,7 @@ class galaxy (object):
 
         def emit (self):
             self.galaxy._add_to_location(self.mass, self.x, self.y, 0, 0)
+            self.galaxy.galaxyMass += self.mass
             self._spin()
 
         def _spin (self):

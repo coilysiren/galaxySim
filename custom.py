@@ -8,12 +8,12 @@ import sys
 class partitionData (object):
     '''
     Partitions data into 2d or 3d boxes.
-
+    
     [Input]
     data
         type: numpy ndarray
         a collection of the data to be partitioned
-
+    
     [API]
     self.partitionToPoints[partition]
         type: dictionary
@@ -24,11 +24,22 @@ class partitionData (object):
     self.maxPartition
         type: int
         the number of the last partition
+    self.data
+        type: numpy ndarray
+        you can add new data without reseting the partitions
+        this is useful to moving averages
+    
     self.partitionAverage[partition]
         type: dictionary
         stores the average for each partition
-    self.calculateAvereage()
+    self.calculateAverage()
         stores the average of each partition's data into self.partitionAverage
+    
+    self.partitionCenterOfMass[partition]
+        type: dictionary
+        stores the center of mass for each partition
+    self.calculateCenterOfMass()
+        stores the center of mass in self.partitionCenterOfMass
     '''
     def __init__ (self, data):
         self.data = data
@@ -80,13 +91,38 @@ class partitionData (object):
         self.partitionAverage = dict()
         for partition, points in self.partitionToPoints.items():
             valueSum = 0
+            locationSum = [0,0]
             numPoints = len(points)
             for point in points:
                 if not param:
                     valueSum += self.data[point]
+                elif param == "index":
+                    locationSum[0] += point[0]
+                    locationSum[1] += point[1] 
                 else:
                     valueSum += self.data[point][param]
-            self.partitionAverage[partition] = valueSum/numPoints
+            if param == "index":
+                self.partitionAverage[partition] = (locationSum[0]/numPoints,locationSum[1]/numPoints)
+            else:
+                self.partitionAverage[partition] = valueSum/numPoints
+
+    def calculateCenterOfMass (self):
+        '''
+        assumes the input data set is of format data[i] = mass
+        '''
+        self.partitionCenterOfMass = dict()
+        self.partitionMass = dict()
+        for partition, points in self.partitionToPoints.items():
+            weightedPostition = [0,0]
+            totalMass = 0
+            for point in points:
+                mass = self.data[point]
+                totalMass += mass
+                weightedPostition[0] += mass*point[0]
+                weightedPostition[1] += mass*point[1]
+            COM = [weightedPostition[0]/totalMass, weightedPostition[1]/totalMass]
+            self.partitionCenterOfMass[partition] = COM
+            self.partitionMass[partition] = totalMass
 
 class loopProgress (object):
     '''
