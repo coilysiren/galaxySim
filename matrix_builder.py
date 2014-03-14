@@ -9,12 +9,12 @@ import sys
 
 if __name__ == "__main__":
 	try:
-		size = sys.argv[1]
+		size = int(sys.argv[1])
 	except IndexError:
-		print("no size give, defaulting to 10")
+		print("no size given, defaulting to 10")
 		size = 10
 	t_start = time.time()
 	distance_matrix = build_distance_matrix(size)
-	with open("matrix.p", "wb") as matrix_file:
+	with open("data/matrix"+str(size)+".p", "wb") as matrix_file:
 		pickle.dump(distance_matrix, matrix_file)
-	print("time taken ",time.time()-t_start)
+	print("Matrix built\ntime taken "+str(round(time.time()-t_start,1))+"s")

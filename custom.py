@@ -3,6 +3,7 @@
 from __future__ import division
 import math
 import numpy
+import sys
 
 class partitionData (object):
     '''
@@ -87,6 +88,25 @@ class partitionData (object):
                     valueSum += self.data[point][param]
             self.partitionAverage[partition] = valueSum/numPoints
 
+class loopProgress (object):
+    '''
+    simple two line loop progress indicator
+
+    [Example]
+    pb = loopProgress(100-1) #initilize indicator
+    for i in range(100):
+        pb.update(i) #update value
+    '''
+    def __init__ (self, maxVal=0):
+        self.maxVal = maxVal
+        print("Loop progress")
+    def update (self, counter):
+        sys.stdout.flush()
+        if self.maxVal:
+            sys.stdout.write("\r{}/{}".format(counter,self.maxVal))
+        else:
+            sys.stdout.write("\r{}".format(counter))
+
 
 def rotate (point_x, point_y, rads, center=(0,0)):
     newX = center[0] + (point_x-center[0])*math.cos(rads) - (point_y-center[1])*math.sin(rads)
@@ -94,10 +114,9 @@ def rotate (point_x, point_y, rads, center=(0,0)):
     return newX,newY
 
 def build_distance_matrix (size):
-    dmBar = createProgressBar(size)
-    dmBar.start
     distance_matrix = dict()
     known_distances = dict()
+    pb = loopProgress(size)
     for x1 in range(size):
         for y1 in range(size):
             distance_matrix[x1, y1] = numpy.empty((size, size))
@@ -111,8 +130,7 @@ def build_distance_matrix (size):
                     known_distances[dy,dx] = dist
                     distance_matrix[x1, y1][x2, y2] = dist
                 distance_matrix[x1, y1][x2, y2] = math.hypot(dx, dy)
-    
-    dmBar.finish
+        pb.update(x1)
     return distance_matrix
 
 def sortkeys (data):

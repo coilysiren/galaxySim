@@ -1,7 +1,7 @@
 #.gitignore
 
 #mine
-
+/data
 *.npy
 *.bat
 *.p
