@@ -1,3 +1,6 @@
+#visualize.py
+
+from __future__ import division
 import time
 import numpy
 import PIL
@@ -11,16 +14,14 @@ import images2gif
 
 def visualize(display):
     '''
-    visualize.py
-
     Used to visualize numpy data sets
 
-    Use
+    [Use]
         python visualize.py gif
         python visualize.py png
         python visualize.py plot
 
-    Dependencies
+    [Dependencies]
         Python 2.7
         PIL
         matplotlib
