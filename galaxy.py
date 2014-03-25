@@ -98,20 +98,20 @@ class galaxy (object):
         Then for every point, compare it to all the partitions, except the partition that
         it is inside of. For that partition, compare against every point. 
         '''
-        #gravitate only to points in your partition
         self.partitionInstance.data = self.masses #set points
         self.partitionInstance.calculateCenterOfMass() #calc COM
-        PCOM = self.partitionInstance.partitionCenterOfMass #get COM
-        PMASS = self.partitionInstance.partitionMass 
-        #get the galaxy weighted position
-        #...why?
-        wieghtedPositionGalaxy = [0,0]
-        for partition, COM in numpy.ndenumerate(PCOM):
-            COMX = COM[0]; COMY = COM[1]
-        
-        for partitionHere, points in self.partitionInstance.partitionToPoints.items():
-            pass
-        #gravitate every point to every other point
+        PCOM = self.partitionInstance.partitionCenterOfMass
+        PMASS = self.partitionInstance.partitionMass         
+        #for every point
+        for originPoint, partitionHere in self.partitionInstance.pointsToPartition.items():
+            #build the list of (point, mass) to compare against
+            compareAgainst = []
+            #first from all points in local partition
+            for 
+            #then from all other partitions
+            for 
+            #create and apply the acceleration vector
+
         '''
         for location_here, mass_here in numpy.ndenumerate(self.masses):
             X = 0; Y = 1; G = .1
@@ -131,6 +131,9 @@ class galaxy (object):
             self.x_velocities[location_here] += x_velocity_change
             self.y_velocities[location_here] += y_velocity_change
         '''
+    def _buildForceVector (origin, comparisonPoints):
+
+        self._add_to_location
     #very experimental diffusion code
     '''
     def _diffuse (self):
