@@ -44,7 +44,7 @@ class galaxy (object):
             emitter.emit()
         self._gravitate()
         self._move()
-        self._diffuse()
+        #self._diffuse()
         self.masses, self._masses = self._masses, self.masses
         self.x_velocities, self._x_velocities = self._x_velocities, self.x_velocities
         self.y_velocities, self._y_velocities = self._y_velocities, self.y_velocities
@@ -78,18 +78,39 @@ class galaxy (object):
             self._add_to_location(mass_here, location[X]+x_velocity, location[Y]+y_velocity, x_velocity, y_velocity)
 
     def _gravitate (self):
+        '''
+        [BACKGROUND]
+        Under ideal circumstances, you'd gravitate every point in the galaxy towards
+        every other point in the galaxy [note: the "galaxy" here is defined as an 
+        area where each point has a gas density, there are no solids]. That's an 
+        extrememly expensive computation, on the order of size^4.
+
+        To help with that, what you can instead do is divide the galaxy into a
+        series of partitions, and simplify each one into a point mass. This is essentially
+        treating each partition as if it were a solid mass. Similarly to gravitating to
+        actual solid masses, this simplification doesn't [to my knowledge] produce 
+        any issues so long as the origin point of the comparison is not contained 
+        within the solid mass [i.e. the partition]
+
+        [IMPLEMENTATION]
+        At the start of the simulation, assign every point to a partition. Then for every
+        time step, get the COM [center of mass] and the total mass for for each partition.
+        Then for every point, compare it to all the partitions, except the partition that
+        it is inside of. For that partition, compare against every point. 
+        '''
         #gravitate only to points in your partition
-        self.partitionInstance.data = self.masses
-        self.partitionInstance.calculateCenterOfMass()
-        PCOM = self.partitionInstance.partitionCenterOfMass
-        PMASS = self.partitionInstance.partitionMass
+        self.partitionInstance.data = self.masses #set points
+        self.partitionInstance.calculateCenterOfMass() #calc COM
+        PCOM = self.partitionInstance.partitionCenterOfMass #get COM
+        PMASS = self.partitionInstance.partitionMass 
         #get the galaxy weighted position
+        #...why?
         wieghtedPositionGalaxy = [0,0]
         for partition, COM in numpy.ndenumerate(PCOM):
             COMX = COM[0]; COMY = COM[1]
         
         for partitionHere, points in self.partitionInstance.partitionToPoints.items():
-
+            pass
         #gravitate every point to every other point
         '''
         for location_here, mass_here in numpy.ndenumerate(self.masses):
