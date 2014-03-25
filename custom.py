@@ -34,7 +34,10 @@ class partitionData (object):
         stores the average for each partition
     self.calculateAverage()
         stores the average of each partition's data into self.partitionAverage
-    
+
+    self.partitionMass[partition]
+        type: dictionary
+        stores the mass for each partition    
     self.partitionCenterOfMass[partition]
         type: dictionary
         stores the center of mass for each partition

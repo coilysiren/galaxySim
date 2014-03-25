@@ -100,18 +100,28 @@ class galaxy (object):
         '''
         self.partitionInstance.data = self.masses #set points
         self.partitionInstance.calculateCenterOfMass() #calc COM
-        PCOM = self.partitionInstance.partitionCenterOfMass
         PMASS = self.partitionInstance.partitionMass         
         #for every point
-        for originPoint, partitionHere in self.partitionInstance.pointsToPartition.items():
+        for origin_point, origin_partition in self.partitionInstance.pointsToPartition.items():
             #build the list of (point, mass) to compare against
-            compareAgainst = []
+            if not self.masses[local_point]:
+                continue
+            compare_against = []
             #first from all points in local partition
-            for 
+            for local_point in self.partitionInstance.partitionToPoints[origin_partition]:
+                if local_point == origin_point:
+                    continue
+                compare_against.append((local_point,self.masses[local_point]))
             #then from all other partitions
-            for 
+            for other_partition, partition_center_of_mass in self.partitionInstance.partitionCenterOfMass.items():
+                if origin_partition == other_partition:
+                    continue
+                compare_against.append((partition_center_of_mass,self.partitionInstance.partitionMass[other_partition]))
             #create and apply the acceleration vector
+            self._apply_force_vector(origin_point,compare_against)
 
+    def _apply_force_vector (origin_point, compare_against):
+        self._add_to_location()
         '''
         for location_here, mass_here in numpy.ndenumerate(self.masses):
             X = 0; Y = 1; G = .1
